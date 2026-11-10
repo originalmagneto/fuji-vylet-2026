@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Výlet k Fuji · streda 11. 11. 2026</title>
+<meta name="description" content="Plán jednodňového výletu autom k Fuji: Fujinomiya, Aokigahara (chodník), bicykle pri Kawaguchiku, západ slnka 16:41, Gotemba. Živá mapa, fotky a výber trasy.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E%F0%9F%97%BB%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="vendor/leaflet.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="hero">
+ <h1>Výlet autom k Fuji</h1>
+ <p>Streda 11. 11. 2026 · Orix Mukōjima → Fujinomiya → Aokigahara (chodník) → Kawaguchiko na bicykloch → Gotemba</p>
+ <div class="chips"><span class="chip">☀ západ 16:41, súmrak 17:08</span><span class="chip">🌤 jasno, 7–12 °C</span><span class="chip">🚗 auto cez noc, vrátenie štv 8:00</span><span class="chip">🚫 bez jaskýň</span></div>
+ <p style="margin-top:14px"><a class="btn big" href="#mapsec">🗺 Živá mapa</a> <a class="btn big" href="#route">🧭 Vyber si trasu</a> <a class="btn big" href="#spots">📷 Fotospoty</a></p>
+</header>
+<nav id="nav">
+ <a href="#mapsec">Mapa</a><a href="#plan">Časový plán</a><a href="#route">Vyber si trasu</a><a href="#spots">Fotospoty</a><a href="#bike">Bicykle</a><a href="#sunspots">Západ slnka</a><a href="#return">Návrat auta</a><a href="#shop">Gotemba</a><a href="#weather">Počasie</a><a href="#rules">Etiketa</a><a href="#budget">Rozpočet</a><a href="#backup">Ak je oblačno</a><a href="#links">Odkazy</a><a href="#credits-s">Fotky a licencie</a>
+</nav>
+<main>
+<section style="margin-top:14px">
+ <div class="call no"><b>Bez jaskýň</b>Fugaku Wind Cave, Narusawa ani Bat Cave už nie sú v pláne. Aokigahara je len prechádzka po značenom chodníku Tokai Nature Trail lávovým lesom (~40 min). Ušetrený čas ide na bicykle a západ slnka.</div>
+ <div class="call"><b>Hlavný plán: auto cez noc, vrátenie vo štvrtok o 8:00</b>V stredu nie je večerný limit 20:00. Po západe v Nagasaki Park vráťte bicykle do 18:00, potom Gotemba (otvorené do 20:00, príchod ~18:25), natankujte a ste doma ~22:15. Štvrtok 12. 11.: vrátenie 8:00, o 8:30 odchod na NRT T3, let 7C1188 o 12:05.</div>
+ <div class="grid-kawa" id="kawa" style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px"></div>
+</section>
+
+<section id="mapsec">
+ <h2>Živá mapa</h2>
+ <p class="cap">Podklad: OpenStreetMap (© prispievatelia OpenStreetMap). Zoomuj, ťahaj, kliknutím na pin sa otvorí popis a odkaz do Google Maps. Trasy sú ilustračné (OSRM / OSM bike), nie navigácia.</p>
+ <details id="lay" open><summary style="cursor:pointer;margin:6px 0">Vrstvy mapy</summary>
+ <div class="layers">
+  <label><input type="checkbox" id="t-car" checked> <span class="sw" style="background:#d62828"></span>Auto tam</label>
+  <label><input type="checkbox" id="t-bike" checked> <span class="sw" style="background:#2d8a4e"></span>Bicykel</label>
+  <label><input type="checkbox" id="t-back" checked> <span class="sw" style="background:#1d4e89"></span>Návrat cez Gotembu</label>
+  <label><input type="checkbox" id="t-stops" checked>Zastávky 1–7 + 🅿 coin parking</label>
+  <label><input type="checkbox" id="t-sun" checked>Západ S1–S6</label>
+  <label><input type="checkbox" id="t-shops" checked>Bicykle A–E</label>
+  <label><input type="checkbox" id="t-opt" checked>Voliteľné ★</label>
+  <label><input type="checkbox" id="t-cams">📷 Pozície fotografov</label>
+  <label><input type="checkbox" id="t-side" checked>Odbočka Iyashi</label>
+  <label><input type="checkbox" id="t-altB"> <span class="sw" style="background:#2a9d8f"></span>Variant B</label>
+  <label><input type="checkbox" id="t-altC"> <span class="sw" style="background:#7b2cbf"></span>Variant C</label>
+ </div></details>
+ <div id="mapwrap"><div id="map" aria-label="Interaktívna mapa"></div></div>
+ <p><button class="btn sm" id="b-all">Celá trasa</button><button class="btn sm sec" id="b-fuji">Okolie Fuji</button><button class="btn sm sec" id="b-kawa">Kawaguchiko, sever</button><button class="btn sm sec" id="b-loc">◎ Moja poloha</button></p>
+ <p class="cap">Červená plná = auto tam, zelená prerušovaná = bicykel (stanica → Ubuyagasaki → Oishi → Nagasaki → stanica), modrá prerušovaná = návrat cez Gotembu do Orixu. Pin 1–7 = zastávky, S1–S6 = miesta na západ slnka, štvorce A–E = požičovne, ★ = voliteľné, 📷 = kde stál fotograf.</p>
+ <p><a class="btn" target="_blank" rel="noopener" id="gm-all" href="#">Celá trasa v Google Maps</a><a class="btn sec" target="_blank" rel="noopener" id="gm-am" href="#">Ráno: Orix → Kawaguchiko</a><a class="btn sec" target="_blank" rel="noopener" id="gm-pm" href="#">Večer: Kawaguchiko → Gotemba → Orix</a></p>
+ <details><summary>Zastávky v Google Maps</summary><ul id="stoplinks" class="tight"></ul></details>
+</section>
+
+<section id="plan">
+ <h2>Časový plán (streda 11. 11.)</h2>
+ <p class="cap">Časy jazdy sú moje odhady z OSRM bez premávky plus rezerva, nie navigácia. Čas na bicykli je odhad, nie meranie. Streda je pracovný deň.</p>
+ <div class="card"><ul class="tl" id="tl"></ul></div>
+ <div class="call ok"><b>Čo sa zmenilo bez jaskýň</b>Odpadla jaskyňa (350 ¥ a ~15 min) a prechádzka sa skrátila z ~60 na ~40 min. Bicykle začínajú o 15:05 (pôvodne 15:15), Oishi o 15:45 (pôvodne 15:55) a na Nagasaki Park ostáva rezerva pred západom o 16:41.</div>
+</section>
+
+<section id="route">
+ <h2>Vyber si trasu</h2>
+ <p class="cap">Tri varianty podľa toho, čo chceš vidieť. Jazda je OSRM bez premávky, miesta na mape ukáže tlačidlo „Ukáž na mape“. Časy po odbočke z hlavného plánu sú moje odhady.</p>
+ <div class="opts" id="opts"></div>
+ <h3>Porovnanie</h3>
+ <div class="tw"><table class="cmp" id="cmp"></table></div>
+ <p class="cap">Odbočky z hlavného plánu pri pridaní jedného miesta (jazda + pobyt): Iyashi no Sato +9 min + 30–45 min, Chureito +13 min + 60 min, Honcho-dori +6 min + 20 min, Oshino Hakkai +23 min + 45 min, jazero Motosu +21 min + 30–60 min. Panorama-dai je skoro cestou do Gotemby (+29 min), ale vylučuje bicykle.</p>
+</section>
+
+<section id="spots">
+ <h2>Fotospoty: príklady fotiek z konkrétnych miest</h2>
+ <p class="cap">Fotky sú z Wikimedia Commons (voľné licencie, autor a licencia pod každou fotkou po otvorení a v sekcii dole). Číslo pod fotkou ukazuje, ako ďaleko od bodu miesta stál fotograf podľa geotagu v Commons – po kliknutí na „Ukáž na mape“ sa na mape ukážu 📷 pozície fotografov a čiary k bodu. Fotky bez GPS majú len približné miesto. Svetlo a časy sú moje odhady z polohy slnka (západ 16:41, azimut ~249°), pokiaľ nie je uvedený zdroj.</p>
+ <div id="spots"></div>
+</section>
+
+<section id="bike">
+ <h2>Bicykle a severný breh Kawaguchika</h2>
+ <p class="cap">Hodiny a ceny Soranoshity a Fuji Kanko Travel sú z ich oficiálnych stránok, overené 10. 11. 2026. Čas jazdy na bicykli je odhad. Celý okruh okolo jazera (~20 km) sa do okna pred západom nezmestí.</p>
+ <div class="call warn"><b>Odporúčam e-bicykle v Soranoshite a odchod z Aokigahary najneskôr 14:40</b>Predajňa zatvára o 18:00, západ v Nagasaki Park je 16:41. Okruh stanica → Ubuyagasaki → Oishi → Nagasaki → stanica je ~13,6 km. Auto nechajte na Fujiyama Parking pri stanici: 200 ¥ / 30 min, prvých 30 min zadarmo (zľavy pre vlak/bus sa na vás pravdepodobne nevzťahujú).</div>
+ <div class="call warn"><b>Na západ slnka vyhovujú A, C, E a D, B nie</b>Fuji Kanko Travel (B) vyžaduje vrátenie do 17:00. Soranoshita (A), Pooh-san (C) a fujisanbike (E) zatvárajú o 18:00. Q-BIKE (D) 1-dňový pass treba vrátiť do 17:00 a na pár hodín vyjde drahšie.</div>
+ <div id="shops"></div>
+ <p>Na walking trail pri severnom brehu bicykle nesmú (upozornenie Fuji Kanko Travel): odstavte ich a úsek choďte pešo. Jazda vľavo, na moste podľa tabuliek, prednosť chodcom.</p>
+</section>
+
+<section id="sunspots">
+ <h2>Západ slnka: presné miesta na fotenie</h2>
+ <p class="cap">Súradnice sú stredy parkov a objektov z OpenStreetMap, nie presný stojan fotografa. Uhly Fuji a slnka sú moje výpočty zo súradníc a polohy slnka pre Kawaguchiko (západ 16:41, súmrak 17:08). Pozície fotografov z Commons sú pri jednotlivých miestach v sekcii Fotospoty.</p>
+ <div class="call"><b>Plán fotenia: 15:20 Ubuyagasaki (10 min), 15:45 Oishi, 16:15 Nagasaki Park, 16:41 západ</b>Slnko zapadá o 16:41 na ~249° (WSW), Fuji je zo severného brehu na juh (185–192°). Slnko je teda 57–64° vpravo od hory, mimo záberu bežného objektívu: dostaneš Fuji s teplým bočným svetlom a farebnou oblohou vpravo, nie slnko za vrcholom. Ružové zafarbenie Fuji je možné ~16:30–17:00 pri jasnej oblohe nad západom, nie je zaručené (odhad, nie predpoveď). Kopce na západe od jazera môžu priame slnko skryť skôr než o 16:41, výšku horizontu som neoveril. Z Nagasaki Parku odchádzaj okolo 17:00, v súmraku sa jazdí so svetlami.</div>
+ <div id="sunl"></div>
+</section>
+
+<section id="return">
+ <h2>Návrat auta: štvrtok 8:00</h2>
+ <p class="cap">Časy jazdy sú OSRM bez premávky plus moja rezerva. Otváracia doba Orixu od 8:00 je z informácie od teba, nie z overeného zdroja. Parkovanie cez noc a ETC poplatky som neoveril.</p>
+ <ul class="tight">
+  <li><b>17:00–17:30</b> späť na bicykloch, bicykle vrátiť pred 18:00.</li>
+  <li><b>17:40</b> odchod do Gotemby (OSRM 36 min, 34 km), ~18:25 príchod.</li>
+  <li><b>20:00–20:25</b> odchod z outletu a tankovanie (natankujte večer, nie ráno).</li>
+  <li><b>~22:15</b> ubytovanie v Higashimukōjime (OSRM Gotemba → Orix 1 h 28 min, 108 km, + tankovanie a rezerva).</li>
+  <li><b>štvrtok 7:45</b> odchod do Orixu, <b>8:00</b> vrátenie, <b>8:30</b> odchod na NRT T3, let 7C1188 o 12:05 (čas presunu na letisko neoverený).</li>
+ </ul>
+ <div class="call warn"><b>Parkovanie cez noc treba vybaviť vopred</b>V Japonsku sa nesmie nechať auto cez noc na ulici, musí byť na parkovisku mimo ulice. Opýtajte sa hostiteľa, či ubytovanie má parkovisko. Ak nie, hľadajte coin parking v okolí Higashimukōjima (v mapách hľadaj „コインパーキング 東向島“, <a target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=%E3%82%B3%E3%82%A4%E3%83%B3%E3%83%91%E3%83%BC%E3%82%AD%E3%83%B3%E3%82%B0%20%E6%9D%B1%E5%90%91%E5%B3%B6">otvoriť</a>; pin „P“ na mape je len približná oblasť). Cenu, voľné miesta ani maximálnu výšku vozidla som neoveril.</div>
+ <p><b>Záloha:</b> ak by ste auto cez noc nechceli držať, vráťte ho v stredu do 20:00 (pobočka zatvára o 20:00, vrátenie mimo hodín nejde). Potom odchod z Oishi najneskôr 16:55 a bez Gotemby. Ak meškáte, zavolajte 03-3612-0543.</p>
+</section>
+
+<section id="shop">
+ <h2>Nákupy cestou späť: Gotemba Premium Outlets</h2>
+ <div class="grid-kawa" id="gotg" style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px"></div>
+ <p class="cap">Hodiny sú z oficiálnej stránky asociácie Gotemba (aktualizované 5. 11.): obchody 10:00–20:00, zatvorené len 25. 2. 2027; platí aj pre stredu 11. 11. Obsah obchodov a zľavy som neoveril.</p>
+ <p>Po vrátení bicyklov je zo stanice OSRM 36 min (34 km), s rezervou príchod ~18:25: ~1 h 30 na nákupy do 20:00 a potom ~1 h 28 domov bez tankovania a rezervy. Parkovisko zadarmo. Kto chce byť doma ~21:30, odíde okolo 19:30.</p>
+ <p>Variant C (Panorama-dai) dáva v Gotembe ~2 h, variant bez Gotemby nie je plánovaný.</p>
+</section>
+
+<section id="weather">
+ <h2>Počasie a jesenné farby</h2>
+ <div class="tw"><table class="cmp"><thead><tr><th>Čas</th><th>Teplota</th><th>Oblačnosť</th><th>Vietor</th></tr></thead><tbody><tr><td>9:00</td><td>6,7 °C</td><td>0 %</td><td>1,8 km/h</td></tr><tr><td>11:00</td><td>9,9 °C</td><td>0 %</td><td>4,6 km/h</td></tr><tr><td>13:00</td><td>11,6 °C</td><td>1 %</td><td>7,7 km/h</td></tr><tr><td>15:00</td><td>11,2 °C</td><td>7 %</td><td>6,4 km/h</td></tr><tr><td>17:00</td><td>7,6 °C</td><td>7 %</td><td>6,6 km/h</td></tr></tbody></table></div>
+ <p>Predpoveď Open-Meteo pre Kawaguchiko (výška ~860 m) ukazuje takmer jasno a žiadny dážď, rannú hmlu len do ~7:00, minimum 2,5 °C, maximum 11,8 °C. Overil som ju len na jednom zdroji, JMA som nekontroloval. Ráno otvor webkamery (kawaguchiko.net, isfujivisible.com). Z historických dát Fuji City je celá hora vidieť o 8:00 na 36,6 % dní a o 16:00 na 22,5 % dní, takže popoludní môže Fuji zahaliť oblak aj pri jasnej predpovedi.</p>
+ <p>10. 11. spadlo podľa modelu 9,4 mm dažďa, takže chodníky pri vodopáde a v lese budú mokré.</p>
+ <p>Festival jesenného lístia pri Kawaguchiku beží 7.–29. 11. 2026, osvetlenie Momiji Kairo od západu slnka do 21:00. Vrchol sa predpovedá okolo 15.–16. 11., takže 11. 11. bude tesne pred ním. Parkovisko pri festivale je tento rok platené (1 000 ¥, len bezhotovostne).</p>
+</section>
+
+<section id="rules">
+ <h2>Etiketa a bezpečnosť</h2>
+ <p>Aokigahara je pre mnohých Japoncov miesto smútku. Správaj sa tam ticho a zdržanlivo.</p>
+ <ul class="tight">
+  <li>Zostaň na značenom chodníku, vstup mimo neho je zakázaný (oficiálna stránka prefektúry). Ak stratíš značky, zastav, vráť sa po vlastnej stope k poslednej značke.</li>
+  <li>Zostaňte spolu, dohodnite si čas návratu k autu. Stiahni si offline mapu (signál v lese som neoveril). Núdzovka: polícia 110, záchranka/hasiči 119.</li>
+  <li>Hovor potichu, nezbieraj rastliny, nepoškoď machy ani lávu, odpadky odnes.</li>
+  <li>Nefilmuj ani nefoť iných ľudí, stany ani osobné veci. Ak niekoho stretneš v ťažkostiach alebo nájdeš opustené veci, nič sa nedotýkaj a zavolaj políciu na 110.</li>
+  <li>Pri Lawsone stoj na verejnom chodníku, cez cestu iba na semafore, neparkuj pri obchode.</li>
+  <li>Na bicykli jazda vľavo; po západe slnka sa stmieva, vráťte sa včas.</li>
+  <li>Drón nepoužívať. Jazda vľavo, medzinárodný vodičák 1949 a pas pri sebe, ETC pruh na bránkach.</li>
+ </ul>
+</section>
+
+<section id="budget">
+ <h2>Rozpočet</h2>
+ <div class="tw"><table class="cmp"><thead><tr><th>Položka</th><th>Suma</th><th>Stav</th></tr></thead><tbody>
+ <tr><td>Prenájom SA + ETC karta + CDW + RAP</td><td>12 210 ¥</td><td>Potvrdenie Orix, platba na pobočke</td></tr>
+ <tr><td>Diaľničné poplatky ETC</td><td>3 760 ¥ jedným smerom</td><td>Údaj Toyosu → Kawaguchiko; spolu tam a späť ~7 520 ¥ (odhad)</td></tr>
+ <tr><td>Parkovanie Fujinomiya (Širaito/Otodome)</td><td>500 ¥</td><td>Asociácia Fujinomiya</td></tr>
+ <tr><td>Parkovisko Fugaku pri Aokigahare</td><td>zadarmo</td><td>Prefektúra Yamanashi (neoverené pre pešiu túru)</td></tr>
+ <tr><td>Parkovanie Oishi</td><td>zadarmo</td><td>Auto tam nebude, budete na bicykli</td></tr>
+ <tr><td>Fujiyama Parking pri stanici</td><td>200 ¥ / 30 min, prvých 30 min zadarmo</td><td>Fujikyu Railway</td></tr>
+ <tr><td>E-bicykel Soranoshita</td><td>3 000 ¥ / 3 h alebo 4 000 ¥ / deň na osobu</td><td>Oficiálna stránka. Obyčajný 1 000 ¥ / 3 h alebo 1 500 ¥ / deň</td></tr>
+ <tr><td>Palivo a obed</td><td>neoverené</td><td>Doplniť podľa reálnych cien</td></tr>
+ </tbody></table></div>
+ <p>Overené položky pre 4 osoby bez bicyklov (prenájom, odhad ETC, parkovisko Fujinomiya) vychádzajú na ~20 230 ¥ (bez jaskyne je to o 1 400 ¥ menej oproti starému plánu). Štyri e-bicykle na 3 h pridajú 12 000 ¥. Palivo, obed, parkovanie pri stanici a zľavy v Gotembe som nepočítal.</p>
+</section>
+
+<section id="backup">
+ <h2>Ak je Fuji v oblakoch</h2>
+ <ul class="tight">
+  <li>Ráno skontroluj webkamery. Ak je Fuji zahalené, ostatné zastávky fungujú aj bez neho: vodopád a les.</li>
+  <li>Momiji Kairo funguje aj pri oblačnom nebi, lístie vyzerá dobre aj bez Fuji.</li>
+  <li>Saiko Iyashi no Sato Nenba: 500 ¥ dospelý, 9:00–17:00 (marec–november), posledný vstup 30 min pred zatvorením.</li>
+  <li>Lawson je len voliteľná zastávka pri požičovni; v oblačnom počasí ho preskočte.</li>
+ </ul>
+</section>
+
+<section id="links">
+ <h2>Odkazy a zdroje</h2>
+ <ul class="tight">
+  <li><a target="_blank" rel="noopener" href="https://fujinomiya.gr.jp/en/guide/170/">Širaito a Otodome, asociácia Fujinomiya</a> · <a target="_blank" rel="noopener" href="https://www.hellonavi.jp/spot/1439">Hello Navi: hodiny parkoviska</a></li>
+  <li><a target="_blank" rel="noopener" href="https://www.soranoshita.net/kawaguchiko-jp/service/bicyclerental/">Soranoshita: požičovňa bicyklov</a> · <a target="_blank" rel="noopener" href="https://www.fujikanko-travel.jp/rental_cycle/">Fuji Kanko Travel</a> · <a target="_blank" rel="noopener" href="https://www.fujikyu-railway.jp/en/station/parking.php">Fujiyama Parking</a></li>
+  <li><a target="_blank" rel="noopener" href="https://www.yamanashi-kankou.jp/aokigaharajukai/">Aokigahara: pravidlá návštevy (prefektúra)</a> · <a target="_blank" rel="noopener" href="https://www.aokigaharaforesttours.com/blog/aokigahara-trail-by-trail/">trasy a časy (komerčný zdroj)</a></li>
+  <li><a target="_blank" rel="noopener" href="https://mtfuji-tour.com/lawson-mt-fuji/">Lawson Fuji: pravidlá</a> · <a target="_blank" rel="noopener" href="https://isfujivisible.com/blog/mount-fuji-lawson-photo-spot">je výhľad voľný?</a></li>
+  <li><a target="_blank" rel="noopener" href="https://fujisan.ne.jp/news/6065/">Festival jesenného lístia 2026</a> · <a target="_blank" rel="noopener" href="https://mountfujiprivatetours.com/guides/best-mount-fuji-photo-spots-autumn-winter/">Najlepšie fotospoty na jeseň a v zime</a> · <a target="_blank" rel="noopener" href="https://lakeyamanaka.com/best-view-of-mt-fuji/">11 vyhliadok na Fuji</a></li>
+  <li><a target="_blank" rel="noopener" href="https://gotemba.jp/news/1001/">Gotemba Premium Outlets: hodiny</a> · <a target="_blank" rel="noopener" href="https://www.premiumoutlets.co.jp/en/gotemba/">oficiálna stránka</a></li>
+  <li><a target="_blank" rel="noopener" href="https://en.fujiyoshida.net/spot/index.php?p=12">Chureito, oficiálna stránka</a></li>
+  <li>Trasy: <a target="_blank" rel="noopener" href="https://project-osrm.org/">OSRM</a> (auto), <a target="_blank" rel="noopener" href="https://routing.openstreetmap.de/">routing.openstreetmap.de</a> (bicykel), bez premávky a ilustračné. Komentáre z Redditu a Instagram som neprehľadával.</li>
+ </ul>
+</section>
+
+<section id="credits-s">
+ <h2>Fotky a licencie</h2>
+ <p class="cap">Všetky fotky sú z Wikimedia Commons, zmenšené (max. 1280 px) a znova zakódované. Pri každej je autor, licencia a odkaz na stránku súboru. Licencie CC BY / CC BY-SA vyžadujú uvedenie autora; CC0 a public domain nie. Podkladové mapy: © prispievatelia OpenStreetMap (ODbL). Mapová knižnica: Leaflet (BSD-2).</p>
+ <ol class="credits" id="credits"></ol>
+</section>
+</main>
+<footer>Výlet k Fuji · 11. 11. 2026 · Plán sa môže zmeniť podľa počasia a premávky. Čas a ceny over na mieste.</footer>
+
+<div id="lb" role="dialog" aria-modal="true">
+ <div class="top"><span id="lb-n"></span><span><button class="btn sm sec" id="lb-m">📷 na mape</button><button class="btn sm sec" id="lb-x" aria-label="Zavrieť">✕</button></span></div>
+ <div class="im"><button class="nv l" id="lb-p" aria-label="Predošlá">‹</button><img id="lb-img" alt=""><button class="nv r" id="lb-nx" aria-label="Ďalšia">›</button></div>
+ <div class="cp" id="lb-cp"></div>
+</div>
+<script src="vendor/leaflet.js"></script>
+<script src="data.js"></script>
+<script src="content.js"></script>
+<script src="app.js"></script>
+<script>if(innerWidth<700)document.getElementById("lay").removeAttribute("open")</script>
+</body>
+</html>
